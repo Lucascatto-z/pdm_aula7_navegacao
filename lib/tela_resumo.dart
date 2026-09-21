@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class TelaResumo extends StatelessWidget {
   final String item;
   final int quantidade;
+  final double total; 
 
   const TelaResumo({
     super.key,
     required this.item,
     required this.quantidade,
+    required this.total,
   });
 
   @override
@@ -38,10 +40,27 @@ class TelaResumo extends StatelessWidget {
                 'Quantidade Selecionada: $quantidade',
                 style: const TextStyle(fontSize: 18),
               ),
+              const SizedBox(height: 8),
+
+              Text(
+                'Total: R\$ ${total.toStringAsFixed(2).replaceAll('.', ',')}',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 32),
+
+              FilledButton.icon(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                icon: const Icon(Icons.check),
+                label: const Text('Confirmar Pedido'),
+              ),
+              const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: () {
-                  // Desempilha a tela atual e retorna à anterior
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back),

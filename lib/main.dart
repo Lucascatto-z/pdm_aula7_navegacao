@@ -32,6 +32,7 @@ class TelaContador extends StatefulWidget {
 class _TelaContadorState extends State<TelaContador> {
   int _quantidade = 1;
   final String _nomeProduto = 'Smartphone Galaxy S24';
+  final double _precoUnitario = 150.00; 
 
   void _incrementar() {
     setState(() {
@@ -44,6 +45,35 @@ class _TelaContadorState extends State<TelaContador> {
       setState(() {
         _quantidade--;
       });
+    }
+  }
+
+  void _zerar() {
+    setState(() {
+      _quantidade = 1;
+    });
+  }
+
+  Future<void> _irParaResumo() async {
+    final double total = _quantidade * _precoUnitario;
+
+    final bool? confirmado = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TelaResumo(
+          item: _nomeProduto,
+          quantidade: _quantidade,
+          total: total,
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (confirmado == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pedido Confirmado com Sucesso!')),
+      );
     }
   }
 
@@ -63,6 +93,11 @@ class _TelaContadorState extends State<TelaContador> {
               Text(
                 _nomeProduto,
                 style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Preço unitário: R\$ ${_precoUnitario.toStringAsFixed(2).replaceAll('.', ',')}',
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 24),
               Row(
@@ -90,19 +125,14 @@ class _TelaContadorState extends State<TelaContador> {
               ),
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () {
-                  // Empilha a TelaResumo passando os dados do estado
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TelaResumo(
-                        item: _nomeProduto,
-                        quantidade: _quantidade,
-                      ),
-                    ),
-                  );
-                },
+                onPressed: _irParaResumo,
                 child: const Text('Avançar para Resumo'),
+              ),
+              const SizedBox(height: 12),
+              
+              OutlinedButton(
+                onPressed: _zerar,
+                child: const Text('Zerar Contador'),
               ),
             ],
           ),
